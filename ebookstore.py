@@ -245,7 +245,7 @@ or enter b to go back: ''')
         try:
             # Convert to int for id
             user_delete = int(user_delete)
-            # Checks if the id thye entered is in the list of ids
+            # Checks if the id they entered is in the list of ids
             if user_delete not in all_ids:
                 raise ValueError
             break
