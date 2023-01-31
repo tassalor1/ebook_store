@@ -96,19 +96,22 @@ def add_book():
     while True:
             # If user enters y
             if user_view == 'y':
-                    # Select recently added book by id from user input
-                    cursor.execute('''
-                    SELECT id, title, author, category, qty FROM books WHERE id=?
-                    ''', (user_add_id,))
-                    # Fetches the id
-                    book = cursor.fetchone()
-                    print(book)
-                    break
+
+                # Select recently added book by id from user input
+                cursor.execute('''
+                SELECT id, title, author, category, qty FROM books WHERE id=?
+                ''', (user_add_id,))
+                # Fetches the id
+                book = cursor.fetchone()
+                print(book)
+                return main_menu()
             # If user enter n
             else:
-                    print("Book Added!")
-                    break
+
+                print("Book Added!")
+                return main_menu()
             db.commit()
+
 
 
 
@@ -138,7 +141,7 @@ or enter b to go back: ''')
 
         # If user want to go back to options menu
         if user_update == 'b':
-            return
+            return main_menu()
         try:
             # Convert to int for id number
             user_update = int(user_update)
@@ -199,12 +202,13 @@ Which section of the book record would you like to update? (title, author, categ
         # User wants to update category
         elif user_section == 'qty':
 
-            new_qty = input("Enter new category: ")
+            new_qty = input("Enter new qty: ")
 
             # Updates qty for chosen book
             cursor.execute('''
                         UPDATE books SET qty=? WHERE id=?
                         ''', (new_qty, user_update,))
+
 
         # Selects book they have chosen to update to print info
         cursor.execute('''
@@ -213,8 +217,8 @@ Which section of the book record would you like to update? (title, author, categ
         # Fetches the id
         updated_book = cursor.fetchone()
         print(f"Updated book {updated_book}")
-        break
-
+        return main_menu()
+        db.commit()
 
 # Function to delete book
 def delete_book():
@@ -241,7 +245,7 @@ id of the book would you like to delete
 or enter b to go back: ''')
         # If user wants to go back to options menu
         if user_delete == 'b':
-            return
+            return main_menu()
         try:
             # Convert to int for id
             user_delete = int(user_delete)
@@ -266,6 +270,7 @@ or enter b to go back: ''')
     WHERE id=?
     ''', (user_delete,))
     print(f"{book} has been deleted")
+    return main_menu()
     db.commit()
 
 
@@ -296,7 +301,7 @@ or enter b to go back: ''')
 
         # User enters b send to options menu
         if user_search == 'b':
-            return
+            return main_menu()
         try:
             # Convert user search to int if not b
             user_search = int(user_search)
@@ -315,6 +320,7 @@ or enter b to go back: ''')
     # Fetches the id
     book = cursor.fetchone()
     print(f"{book} has been selected")
+    return main_menu()
     db.commit()
 
 
@@ -325,37 +331,40 @@ def exit():
     quit()
 
 
-while True:
-    try:
-        # Options menu
-        menu = str(input('''
--------------------------------------
- Enter the number you would like:
- 1. Add new book
- 2. Update a books information
- 3. Delete a book
- 4. Search for a book
- 0. Exit
- Enter number here: '''))
-        # Checks that user input is correct
-        if menu not in ('1', '2', '3', '4', '0'):
-            raise ValueError
-        break
-    except ValueError:
-        print("Please enter a valid number")
+def main_menu():
+    while True:
+        try:
+            # Options menu
+            menu = str(input('''
+    -------------------------------------
+     Enter the number you would like:
+     1. Add new book
+     2. Update a books information
+     3. Delete a book
+     4. Search for a book
+     0. Exit
+     Enter number here: '''))
+            # Checks that user input is correct
+            if menu not in ('1', '2', '3', '4', '0'):
+                raise ValueError
+            break
+        except ValueError:
+            print("Please enter a valid number")
 
-while True:
-    # If statement for menu options
-    if int(menu) == 1:
-        add_book()
-    elif int(menu) == 2:
-        update_book()
-    elif int(menu) == 3:
-        delete_book()
-    elif int(menu) == 4:
-        search_books()
-    else:
-        exit()
+    while True:
+        # If statement for menu options
+        if int(menu) == 1:
+            add_book()
+        elif int(menu) == 2:
+            update_book()
+        elif int(menu) == 3:
+            delete_book()
+        elif int(menu) == 4:
+            search_books()
+            continue
+        else:
+            exit()
 
+main_menu()
 
 
